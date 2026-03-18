@@ -35,11 +35,11 @@ Any mods that replace `resources.assets`
 #### Installation
 1. Go to your Nuclear Option game directory, and open the `NuclearOption_Data` folder.
 2. Create a backup of your original `resource.assets` file found within the `NuclearOption_Data` folder.
-3. From the mod folder, place both `resource.assets` and `RITA.resource` into the `NuclearOption_Data` folder, and replace relevant files.
+3. From the mod folder, place both `resource.assets` and `RITA_RVWS.resource` into the `NuclearOption_Data` folder, and replace relevant files.
 
 #### Uninstallation
 1. Replace the modded 'resource.assets' file with the original backup.
-2. Delete `RITA.resource`.
+2. Delete `RITA_RVWS.resource`.
 
 ## DISCLAIMERS
 - Some voice lines were generated using AI to accommodate for Nuclear Option specific warnings.
@@ -48,7 +48,7 @@ Any mods that replace `resources.assets`
 ## Credits
 War Thunder - Original voice lines
 
-## Included voice lines (0.32)
+## Included voice lines | RITA RVWS 1.0.0 | NO 0.32
 | English | Русский |
 | ----------- | ----------- |
 | Eject | Катапультируйся |
