@@ -38,7 +38,7 @@ Any mods that replace `resources.assets`
 3. From the mod folder, place both `resource.assets` and `RITA_RVWS.resource` into the `NuclearOption_Data` folder, and replace relevant files.
 
 #### Uninstallation
-1. Replace the modded 'resource.assets' file with the original backup.
+1. Replace the modded `resource.assets` file with the original backup.
 2. Delete `RITA_RVWS.resource`.
 
 ## DISCLAIMERS
