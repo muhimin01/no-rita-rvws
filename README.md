@@ -1,7 +1,7 @@
 # RITA: Nuclear Option Russian Voice Warning System
 A Nuclear Option mod that replaces the English Voice Warning System with Russian equivalents. Voice lines sourced from War Thunder.
 
-Updated for **Nuclear Option 0.32**
+Updated for **Nuclear Option 0.32** | **[Download RITA RVWS here](https://github.com/muhimin01/no-rita-rvws/releases/latest)**
 
 [![Video Demonstration](https://markdown-videos-api.jorgenkh.no/youtube/6ttqqmxeVXk)](https://www.youtube.com/watch?v=6ttqqmxeVXk)
 
