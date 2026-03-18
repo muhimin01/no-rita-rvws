@@ -10,13 +10,13 @@ Updated for **Nuclear Option 0.32** | **[Download RITA RVWS here](https://github
 ### 1. BepInEx method
 
 #### Dependencies
-[BepInEx](https://github.com/BepInEx/BepInEx]BepInEx)   	
+[BepInEx](https://github.com/BepInEx/BepInEx)   	
 
 #### Conflicts
 Any mods that replace any Voice Warning System lines.
 
 #### Installation
-1. Install [BepInEx](https://github.com/BepInEx/BepInEx]BepInEx) if you haven't already.
+1. Install [BepInEx](https://github.com/BepInEx/BepInEx) if you haven't already.
 2. Place the `RITA_RVWS` folder from the mod in your BepInEx `plugins` folder.
 
 #### Uninstallation
