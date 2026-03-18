@@ -55,12 +55,12 @@ War Thunder - Original voice lines
 | Engine Fire | Пожар двигателя |
 | Front Left Engine Failure | Отказ переднего левого двигателя |
 | Front Right Engine Failure | Отказ переднего правого двигателя |
-| Main Rotor Damage | Отказ несущего винта |
 | Left Engine Failure | Отказ левого двигателя |
 | Left Engine Fire | Пожар левого двигателя |
 | Left Fan Failure | Отказ левого винта |
 | Left Prop Strike | Отказ левого винта |
 | Lower Gear | Выпусти шасси |
+| Main Rotor Damage | Отказ несущего винта |
 | Overspeed | Скорость предельная |
 | Raise Gear | Проверь шасси |
 | Rear Left Engine Failure | Отказ заднего левого двигателя |
