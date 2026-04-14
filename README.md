@@ -48,7 +48,7 @@ Any mods that replace `resources.assets`
 ## Credits
 War Thunder - Original voice lines
 
-## Included voice lines | RITA RVWS 1.0.0 | NO 0.32
+## Included voice lines | RITA RVWS 1.1.0 | NO 0.33
 | English | Русский |
 | ----------- | ----------- |
 | Eject | Катапультируйся |
