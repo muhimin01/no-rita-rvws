@@ -17,7 +17,7 @@ Any mods that replace any Voice Warning System lines.
 
 #### Installation
 1. Install [BepInEx](https://github.com/BepInEx/BepInEx) if you haven't already.
-2. Place the `RITA_RVWS` folder from the mod in your BepInEx `plugins` folder.
+2. Place the `RITA_RVWS` folder from the mod into your BepInEx `plugins` folder.
 
 #### Uninstallation
 Delete the `RITA_RVWS` folder from your BepInEx `plugins` folder.
