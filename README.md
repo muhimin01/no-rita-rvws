@@ -5,9 +5,7 @@ Updated for **Nuclear Option 0.33** | **[Download RITA RVWS here](https://github
 
 [![Video Demonstration](https://markdown-videos-api.jorgenkh.no/youtube/6ttqqmxeVXk)](https://www.youtube.com/watch?v=6ttqqmxeVXk)
 
-## Installation Methods
-
-### 1. BepInEx method
+## Installation
 
 #### Dependencies
 [BepInEx](https://github.com/BepInEx/BepInEx)   	
@@ -22,24 +20,7 @@ Any mods that replace any Voice Warning System lines.
 #### Uninstallation
 Delete the `RITA_RVWS` folder from your BepInEx `plugins` folder.
 
----
-
-### 2. Asset replacement method
-
-#### Dependencies
-None
-
-#### Conflicts
-Any mods that replace `resources.assets`
-
-#### Installation
-1. Go to your Nuclear Option game directory, and open the `NuclearOption_Data` folder.
-2. Create a backup of your original `resource.assets` file found within the `NuclearOption_Data` folder.
-3. From the mod folder, place both `resource.assets` and `RITA_RVWS.resource` into the `NuclearOption_Data` folder, and replace relevant files.
-
-#### Uninstallation
-1. Replace the modded `resource.assets` file with the original backup.
-2. Delete `RITA_RVWS.resource`.
+> *Asset Replacement has been discontinued to continuous incompatibilities with Nuclear Option patches.*
 
 ## DISCLAIMERS
 - Some voice lines were generated using AI to accommodate for Nuclear Option specific warnings.
