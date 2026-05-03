@@ -20,7 +20,7 @@ Any mods that replace any Voice Warning System lines.
 #### Uninstallation
 Delete the `RITA_RVWS` folder from your BepInEx `plugins` folder.
 
-> *Asset Replacement has been discontinued to continuous incompatibilities with Nuclear Option patches.*
+> *Asset Replacement has been discontinued due to continuous incompatibilities with Nuclear Option patches.*
 
 ## DISCLAIMERS
 - Some voice lines were generated using AI to accommodate for Nuclear Option specific warnings.
