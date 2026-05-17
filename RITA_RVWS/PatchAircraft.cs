@@ -16,14 +16,6 @@ namespace RITA_RVWS.Patches
                 try
                 {
                     RITA.Log.LogDebug($"{__instance}, {__instance.HQ}, {aircraft}");
-                    if (RITA.RITADevMode)
-                    {
-                        RITA.Log.LogDebug($"Inspecting: {__instance}");
-                        Dev.RITADebug.LogObjectContents(__instance);
-
-                        RITA.Log.LogDebug($"Inspecting: {aircraft}");
-                        Dev.RITADebug.LogObjectContents(aircraft);
-                    }
                     //RITA.LogClips();
                 }
                 catch (Exception ex)

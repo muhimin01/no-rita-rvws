@@ -12,8 +12,6 @@ namespace RITA_RVWS
 		internal static new ManualLogSource Log;
 		private Harmony _harmony;
 		
-		internal static bool RITADevMode = true;
-
 		private void Awake()
 		{
 			Log = Logger;
@@ -56,13 +54,6 @@ namespace RITA_RVWS
 
 		private void OnSettingChanged(object sender, EventArgs e)
 		{
-			if (RITADevMode)
-			{
-				Log.LogDebug(sender);
-				Dev.RITADebug.LogObjectContents(sender);
-				Log.LogDebug(e);
-				Dev.RITADebug.LogObjectContents(e);
-			}
 			Log.LogDebug($"RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
 		}
 
