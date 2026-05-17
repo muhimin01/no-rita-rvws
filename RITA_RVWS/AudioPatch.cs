@@ -6,36 +6,50 @@ namespace RITA_RVWS.Patches
 {
     internal class AudioPatch
     {
-        internal static bool RITAEnabled = Configuration.RITAEnabled.Value;
-
-        [HarmonyPatch(typeof(AudioSource), nameof(AudioSource.Play), new Type[] {})]
+        [HarmonyPatch(typeof(AudioSource), nameof(AudioSource.Play), new Type[] { })]
         internal static class PatchAudioSourcePlay
         {
             private static void Prefix(AudioSource __instance, out AudioClip __state)
             {
-                RITA.Log.LogDebug($"[AudioPatch]: Triggered");
+                RITA.Log.LogDebug($"[AudioSourcePlay] Triggered");
 
                 __state = __instance.clip; // Store original in state to pass to Postfix
 
-                if (!RITAEnabled) return;
-                if (__instance.clip == null) return;
-                if (!AudioMap._ritaClips.TryGetValue(__instance.clip.name, out AudioClip ritaClip)) return;
-                if (!AudioMap._noClips.ContainsKey(__instance))
+                if (__instance.clip == null)
                 {
-                    AudioMap._noClips[__instance] = __instance.clip;
-                    RITA.Log.LogDebug($"[AudioSourcePlay] Stored: {__instance.clip.name}");
+                    RITA.Log.LogDebug($"[AudioSourcePlay] Skipped: clip is null");
+                    return;
                 }
-                
+
+                RITA.Log.LogDebug($"[AudioSourcePlay] Clip: {__instance.clip.name}");
+
+                if (!Configuration.RITAEnabled.Value)
+                {
+                    RITA.Log.LogDebug($"[AudioSourcePlay] Skipped: Mod is disabled");
+                    return;
+                }
+
+                if (!AudioMap._ritaClips.TryGetValue(__instance.clip.name, out AudioClip ritaClip))
+                {
+                    RITA.Log.LogDebug($"[AudioSourcePlay] Skipped: No replacement found for {__instance.clip.name}");
+                    return;
+                }
+
+                RITA.Log.LogDebug($"[AudioSourcePlay] Replacing: {__instance.clip.name} => {ritaClip.name}");
                 __instance.clip = ritaClip;
-                RITA.Log.LogDebug($"[AudioSourcePlay] Replaced: {__instance.clip.name} => {ritaClip.name}");
             }
-            /*
             private static void Postfix(AudioSource __instance, AudioClip __state)
             {
-                // Restore the original clip immediately after Play() so the source isn't permanently modified
-                if (__state != null) __instance.clip = __state;
+                if (__state == null) return;
+                if (__instance.clip == __state) return;
+                if (RITA.Instance == null)
+                {
+                    RITA.Log.LogDebug($"[AudioSourcePlay] Postfix: RITA.Instance is null, cannot start coroutine");
+                    return;
+                }
+
+                RITA.Instance.StartCoroutine(RITA.Instance.RestoreClipAfterPlay(__instance, __state, __instance.clip));
             }
-            */
         }
 
         [HarmonyPatch(typeof(AudioSource), nameof(AudioSource.PlayOneShot), new Type[] { typeof(AudioClip) })]
@@ -43,14 +57,19 @@ namespace RITA_RVWS.Patches
         {
             private static void Prefix(ref AudioClip clip)
             {
-                if (!RITAEnabled) return;
+
+                RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Triggered");
+                RITA.Log.LogDebug($"[PlayOneShot] Incoming clip: {clip?.name ?? "null"}");
+
+                if (!Configuration.RITAEnabled.Value) return;
                 if (clip == null) return;
 
                 if (AudioMap._ritaClips.TryGetValue(clip.name, out AudioClip ritaClip))
                 {
+                    RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Replacing: {clip.name} => {ritaClip.name}");
                     clip = ritaClip;
-                    RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Replaced: {clip.name} => {ritaClip.name}");
                 }
+                else RITA.Log.LogDebug($"[AudioSourcePlayOneShot] No replacement found for {clip.name}");
             }
         }
     }

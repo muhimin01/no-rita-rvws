@@ -2,117 +2,98 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static NuclearOption.Chat.AllowBanListTabs;
 
 namespace RITA_RVWS
 {
-	[BepInPlugin("com.betanonymous.rita_rvws", "RITA: Russian Voice Warning System", "1.1.0")]
-	public class RITA: BaseUnityPlugin
-	{
-		internal static RITA Instance { get; private set; }
-		internal static new ManualLogSource Log;
-		private Harmony _harmony;
-		
-		internal static bool RITADevMode = false;
+    [BepInPlugin("com.betanonymous.rita_rvws", "RITA: Russian Voice Warning System", "1.1.0")]
+    public class RITA: BaseUnityPlugin
+    {
+        internal static RITA Instance { get; private set; }
+        internal static new ManualLogSource Log;
+        private Harmony _harmony;
 
-		private void Awake()
-		{
-			Log = Logger;
+        private void Awake()
+        {
+            Instance = this;
 
-			// Initialize Configuration Settings
-			Configuration.InitConfig(Config);
-			Config.SettingChanged += OnSettingChanged;
+            Log = BepInEx.Logging.Logger.CreateLogSource("RITA_RVWS");
 
-			// Load Asset Bundle
-			AssetBundle? bundle = BundleLoader.LoadBundle();
-			if (bundle == null) return;
-			Log.LogDebug($"{bundle.name} loaded");
+            // Initialize Configuration Settings
+            Configuration.InitConfig(Config);
+            Config.SettingChanged += OnSettingChanged;
 
-			Dictionary<string, AudioClip> bundleClips = new Dictionary<string, AudioClip>();
-			foreach (AudioClip clip in bundle.LoadAllAssets<AudioClip>())
-			{
-				bundleClips[clip.name] = clip; 
-				Log.LogDebug($"[Awake] Loaded: {clip.name} from {bundle.name}");
-			}
+            // Load Asset Bundle
+            BundleLoader.LoadBundle();
 
-			foreach (var clip in AudioMap.clipMap)
-			{
-				string noClip = clip.Key;
-				string ritaClip = clip.Value;
+            // Apply all Harmony patches
+            _harmony = new Harmony("com.betanonymous.rita_rvws");
+            _harmony.PatchAll();
+            Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
 
-				if (bundleClips.TryGetValue(ritaClip, out AudioClip replacement))
-				{
-					AudioMap._ritaClips[noClip] = replacement;
-					Log.LogDebug($"[Awake] Mapped: {noClip} => {ritaClip}");
-				}
-				else Log.LogWarning($"[Awake] Clip not found: {ritaClip} (expected for game clip: {noClip})");
+            Log.LogInfo("[Awake] Initialized");
+        }
 
+        private void OnDestroy()
+        {
+            try
+            {
+                StopAllCoroutines();
+                _harmony.UnpatchSelf();
+                Log.LogDebug("[OnDestroy] Harmony patches unapplied");
             }
+            catch (Exception ex)
+            {
+                Log.LogError(ex);
+            }
+        }
 
-			bundle.Unload(false);
+        private void OnSettingChanged(object sender, EventArgs e)
+        {
+            // TODO: Implement faction config setting
+            
+            Log.LogDebug($"[OnSettingChanged] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
+        }
 
-			// Patch all patches in RITA_RVWS.Patches
-			_harmony = new Harmony("com.betanonymous.rita_rvws");
-			_harmony.PatchAll();
+        internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip original, AudioClip replacement)
+        {
+            Log.LogDebug($"[RestoreClipAfterPlay] Waiting {replacement.length}s before restoring {original.name}, Loop: {source.loop}");
 
-            Log.LogInfo("RITA initialized");
-			if (RITADevMode) LogClips();
-		}
+            // Wait until the clip has finished playing before restoring
+            yield return new WaitForSeconds(replacement.length);
 
-		private void OnDestroy()
-		{	try
-			{
-				RestoreClips();
-				_harmony.UnpatchSelf();
-				Log.LogDebug("[OnDestroy] Harmony patches unapplied");
-			}
-			catch(Exception ex)
-			{
-				Log.LogError(ex);
-			}
-		}
+            if (source == null || !source.gameObject.activeInHierarchy)
+            {
+                Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {original.name}");
+                yield break;
+            }
+            
+            bool wasLooping = source.loop;
 
-		private void OnSettingChanged(object sender, EventArgs e)
-		{
-			if (RITADevMode)
-			{
-				Log.LogDebug(sender);
-				Dev.RITADebug.LogObjectContents(sender);
-				Log.LogDebug(e);
-				Dev.RITADebug.LogObjectContents(e);
-			}
-			
-			bool RITAEnabled = Configuration.RITAEnabled.Value;
-			Log.LogDebug($"[OnSettingChanged] RITA {(RITAEnabled ? "enabled" : "disabled")}");
+            source.Stop();
+            source.loop = wasLooping; // Preserve original loop setting
+            source.clip = original;
 
-			if (!RITAEnabled) RestoreClips();
-		}
+            if (wasLooping)
+            {
+                source.Play(); // Resume looping with original clip
+                Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {original.name}");
+            }
+            else
+            {
+                Log.LogDebug($"[RestoreClipAfterPlay] Restored: {original.name}");
+            }
+        }
 
-		internal static void RestoreClips()
-		{
-			foreach (var clip in AudioMap._noClips)
-			{
-				AudioSource source = clip.Key;
-				AudioClip noClip = clip.Value;
-
-				if (source != null)
-				{
-					source.clip = noClip;
-					Log.LogDebug($"[RestoreClips] Restored: {noClip.name}");
-				}
-			}
-		}
-
-		internal static void LogClips()
-		{
-			AudioClip[] clips = Resources.FindObjectsOfTypeAll<AudioClip>();
-			foreach (var clip in clips)
-			{
-				Log.LogDebug($"[LogClips] Found AudioClip in Resources: {clip.name}");
-			}
-		}
-	}
+        internal static void LogClips()
+        {
+            AudioClip[] clips = Resources.FindObjectsOfTypeAll<AudioClip>();
+            foreach (var clip in clips)
+            {
+                Log.LogDebug($"[LogClips] Found AudioClip in Resources: {clip.name}");
+            }
+        }
+    }
 }

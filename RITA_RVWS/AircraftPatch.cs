@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
+﻿// TODO: Faction config setting implementation
+using HarmonyLib;
 using NuclearOption.Networking;
 using System;
-using UnityEngine;
 
 namespace RITA_RVWS.Patches
 {
@@ -12,24 +12,26 @@ namespace RITA_RVWS.Patches
         {
             private static void Postfix(Player __instance, Aircraft aircraft)
             {
-                bool RITAEnabled = Configuration.RITAEnabled.Value;
-                if (!RITAEnabled || !GameManager.IsLocalPlayer(__instance)) return;
+                RITA.Log.LogDebug("[PatchSetAircraft] Triggered");
+
+                if (!Configuration.RITAEnabled.Value || !GameManager.IsLocalPlayer(__instance)) return;
                 try
                 {
-                    RITA.Log.LogDebug($"[AircraftPatch]: {__instance}, {__instance.HQ}, {aircraft}");
-                    if (RITA.RITADevMode)
-                    {
-                        RITA.Log.LogDebug($"[AircraftPatch]: Player: {__instance}");
-                        Dev.RITADebug.LogObjectContents(__instance);
-
-                        RITA.Log.LogDebug($"[AircraftPatch]: Aircraft: {aircraft}");
-                        Dev.RITADebug.LogObjectContents(aircraft);
-                    }
+                    RITA.Log.LogDebug($"[PatchSetAircraft]: {__instance}, {__instance.HQ}, {aircraft}");
                 }
                 catch (Exception ex)
                 {
-                    RITA.Log.LogError($"[AircraftPatch]: {ex}");
+                    RITA.Log.LogError($"[AircraftPatch] Exception: {ex}");
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(Player), "RemoveAircraft")]
+        internal static class PatchRemoveAircraft
+        {
+            private static void Postfix(Player __instance)
+            {
+                if (!GameManager.IsLocalPlayer(__instance)) return;
             }
         }
     }
