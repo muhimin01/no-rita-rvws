@@ -15,7 +15,7 @@ namespace RITA_RVWS
             string bundlePath = Path.Combine(Paths.PluginPath, pluginName, assetBundle);
             if (!File.Exists(bundlePath))
             {
-                Debug.LogError($"[{pluginName}.BundleLoader] {assetBundle} not found at path: {bundlePath}");
+                RITA.Log.LogError($"[BundleLoader] {assetBundle} not found at path: {bundlePath}");
                 return null;
             }
             try
@@ -23,13 +23,13 @@ namespace RITA_RVWS
                 AssetBundle bundle = AssetBundle.LoadFromFile(bundlePath);
                 if (bundle == null)
                 {
-                    Debug.LogError($"[{pluginName}.BundleLoader] Failed to load {assetBundle} from path: {bundlePath}");
+                    RITA.Log.LogError($"[BundleLoader] Failed to load {assetBundle} from path: {bundlePath}");
                 }
                 return bundle;
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[{pluginName}.BundleLoader] Exception while loading {assetBundle}: {ex.Message}");
+                RITA.Log.LogError($"[BundleLoader] Exception while loading {assetBundle}: {ex.Message}");
                 return null;
             }
         }

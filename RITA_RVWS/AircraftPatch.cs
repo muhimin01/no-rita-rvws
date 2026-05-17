@@ -5,30 +5,32 @@ using UnityEngine;
 
 namespace RITA_RVWS.Patches
 {
-    internal class PatchAircraft
+    internal class AircraftPatch
     {
         [HarmonyPatch(typeof(Player), "SetAircraft")]
         internal static class PatchSetAircraft
         {
             private static void Postfix(Player __instance, Aircraft aircraft)
             {
-                if (!Configuration.RITAEnabled.Value || !GameManager.IsLocalPlayer(__instance)) return;
+                bool RITAEnabled = Configuration.RITAEnabled.Value;
+                if (!RITAEnabled || !GameManager.IsLocalPlayer(__instance)) return;
                 try
                 {
-                    RITA.Log.LogDebug($"{__instance}, {__instance.HQ}, {aircraft}");
+                    RITA.Log.LogDebug($"[AircraftPatch]: {__instance}, {__instance.HQ}, {aircraft}");
                     if (RITA.RITADevMode)
                     {
-                        RITA.Log.LogDebug($"Inspecting: {__instance}");
+                        RITA.Log.LogDebug($"[AircraftPatch]: Player: {__instance}");
                         Dev.RITADebug.LogObjectContents(__instance);
 
-                        RITA.Log.LogDebug($"Inspecting: {aircraft}");
+                        RITA.Log.LogDebug($"[AircraftPatch]: Aircraft: {aircraft}");
                         Dev.RITADebug.LogObjectContents(aircraft);
                     }
-                    //RITA.LogClips();
+                    AudioMap._noClips.Clear();
+                    RITA.PatchAudio(RITAEnabled);
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log($"[RITA.RVWS.Patches.PatchAircraft]: {ex}");
+                    RITA.Log.LogError($"[AircraftPatch]: {ex}");
                 }
             }
         }
