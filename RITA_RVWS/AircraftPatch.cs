@@ -25,8 +25,6 @@ namespace RITA_RVWS.Patches
                         RITA.Log.LogDebug($"[AircraftPatch]: Aircraft: {aircraft}");
                         Dev.RITADebug.LogObjectContents(aircraft);
                     }
-                    AudioMap._noClips.Clear();
-                    RITA.PatchAudio(RITAEnabled);
                 }
                 catch (Exception ex)
                 {

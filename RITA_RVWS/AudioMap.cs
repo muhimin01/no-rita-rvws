@@ -12,13 +12,12 @@ namespace RITA_RVWS
         
         internal static readonly Dictionary<string, string> clipMap = new Dictionary<string, string>
         {
-            /*
             { "eject1", "actEject" },
             { "raisegear1", "warnGear" },
             { "lowerGearJennifer", "warnGearLower" },
-            { "stall1", "critAOA" },
+            { "stall1", "warnAOA" },
             { "VRSJennifer", "warnVRS" },
-            { "overSpeedJennifer", "critSpeed" },
+            { "overSpeedJennifer", "warnSpeed" },
             { "engineFire", "engineFire" },
             { "engine1Fire", "engineFire1" },
             { "engine2Fire", "engineFire2" },
@@ -38,7 +37,7 @@ namespace RITA_RVWS
             { "rightEngineFire", "engineFireRight" },
             { "rightFanFailureJennifer", "rotorFailureRight" },
             { "rightPropStrike", "rotorFailureRight" },
-            */
+            /*
             { "eject1", "eject1" },
             { "raisegear1", "raisegear1" },
             { "lowerGearJennifer", "lowerGearJennifer" },
@@ -64,6 +63,7 @@ namespace RITA_RVWS
             { "rightEngineFire", "rightEngineFire" },
             { "rightFanFailureJennifer", "rightFanFailureJennifer" },
             { "rightPropStrike", "rightPropStrike" },
+            */
         };
 
         internal static void Init()
