@@ -42,4 +42,10 @@
 		</Reference>
 	</ItemGroup>
 
+	<Target Name="CopyDllToBinRoot" AfterTargets="Build">
+		<Copy
+		  SourceFiles="$(TargetPath)"
+		  DestinationFolder="$(ProjectDir)bin\" />
+	</Target>
+
 </Project>
