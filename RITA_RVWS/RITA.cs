@@ -59,6 +59,12 @@ namespace RITA_RVWS
 			}
 		}
 
+		private void OnSceneLoaded()
+		{
+			Log.LogDebug($"[OnSceneLoaded] Triggered");
+			AircraftPatch.currentFaction = null;
+		}
+
 		private void OnRITAToggle(object sender, EventArgs e)
 		{
 			Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value);
@@ -95,7 +101,7 @@ namespace RITA_RVWS
 		// Restore the original AudioClip on an AudioSource after the replacement clip finishes playing.
 		internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip noClip, AudioClip ritaClip)
 		{
-			//Log.LogDebug($"[RestoreClipAfterPlay] Waiting {replacement.length}s before restoring {noClip.name}, Loop: {source.loop}");
+			//Log.LogDebug($"[RestoreClipAfterPlay] Waiting {ritaClip.length}s before restoring {noClip.name}, Loop: {source.loop}");
 
 			// Wait until the clip has finished playing before restoring
 			yield return new WaitForSeconds(ritaClip.length);
@@ -106,9 +112,14 @@ namespace RITA_RVWS
 				yield break;
 			}
 
+			if (source.clip != ritaClip)
+			{
+				source.clip = noClip;
+				yield break;
+			}
+
 			bool wasLooping = source.loop;
 
-			source.Stop();
 			source.loop = wasLooping; // Preserve original loop setting
 			source.clip = noClip;
 
