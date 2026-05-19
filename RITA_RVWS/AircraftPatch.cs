@@ -7,6 +7,8 @@ namespace RITA_RVWS.Patches
 {
     internal class AircraftPatch
     {
+        internal static string? currentFaction;
+
         [HarmonyPatch(typeof(Player), "SetAircraft")]
         internal static class PatchSetAircraft
         {
@@ -18,6 +20,7 @@ namespace RITA_RVWS.Patches
                 try
                 {
                     RITA.Log.LogDebug($"[PatchSetAircraft]: {__instance}, {__instance.HQ}, {aircraft}");
+                    currentFaction = __instance.HQ.name;
                 }
                 catch (Exception ex)
                 {
@@ -31,6 +34,10 @@ namespace RITA_RVWS.Patches
         {
             private static void Postfix(Player __instance)
             {
+                RITA.Log.LogDebug("[PatchRemoveAircraft] Triggered");
+                
+                currentFaction = null;
+
                 if (!GameManager.IsLocalPlayer(__instance)) return;
             }
         }

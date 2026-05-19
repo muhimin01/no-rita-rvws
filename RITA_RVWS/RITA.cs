@@ -1,6 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using NuclearOption.Networking;
+using RITA_RVWS.Patches;
 using System;
 using System.Collections;
 using System.Linq;
@@ -100,6 +102,28 @@ namespace RITA_RVWS
             {
                 Log.LogDebug($"[LogClips] Found AudioClip in Resources: {clip.name}");
             }
+        }
+
+        internal static bool CheckFaction()
+        {
+            Log.LogDebug("[CheckFaction] Triggered");
+
+            string? currentFaction = AircraftPatch.currentFaction;
+            const string BDF = "BoscaliHQ";
+            const string PALA = "PrimevaHQ";
+
+            Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
+
+            if (Configuration.RITAFactionBDF.Value &&  currentFaction == BDF)
+            {
+                return true;
+            }
+            else if (Configuration.RITAFactionPALA.Value && currentFaction == PALA)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

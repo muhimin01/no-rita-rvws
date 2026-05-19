@@ -29,6 +29,12 @@ namespace RITA_RVWS.Patches
                     return;
                 }
 
+                if (!RITA.CheckFaction())
+                {
+                    RITA.Log.LogDebug($"[AudioSourcePlay] Skipped: RITA not enabled for current player faction");
+                    return;
+                }
+
                 if (!AudioMap._ritaClips.TryGetValue(__instance.clip.name, out AudioClip ritaClip))
                 {
                     RITA.Log.LogDebug($"[AudioSourcePlay] Skipped: No replacement found for {__instance.clip.name}");
@@ -61,7 +67,19 @@ namespace RITA_RVWS.Patches
                 RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Triggered");
                 RITA.Log.LogDebug($"[PlayOneShot] Incoming clip: {clip?.name ?? "null"}");
 
-                if (!Configuration.RITAEnabled.Value) return;
+                if (!Configuration.RITAEnabled.Value)
+                {
+                    RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Skipped: Mod is disabled");
+
+                    return;
+                }
+
+                if (!RITA.CheckFaction())
+                {
+                    RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Skipped: RITA not enabled for current player faction");
+                    return;
+                }
+
                 if (clip == null) return;
 
                 if (AudioMap._ritaClips.TryGetValue(clip.name, out AudioClip ritaClip))
