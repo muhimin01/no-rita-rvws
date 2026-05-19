@@ -10,122 +10,124 @@ using RITA_RVWS.Patches;
 
 namespace RITA_RVWS
 {
-    [BepInPlugin(RITAInfo.PLUGIN_GUID, RITAInfo.PLUGIN_DISPLAY, RITAInfo.PLUGIN_VERSION)]
-    
-    [BepInDependency(RITAInfo.BEPINEX_CONFIG_MANAGER, BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInIncompatibility("com.nikkorap.WSOYappinator")]
-    
-    public class RITA: BaseUnityPlugin
-    {
-        internal static RITA Instance { get; private set; } = null!;
-        internal static ManualLogSource Log = null!;
-        private Harmony _harmony = null!;
+	[BepInPlugin(RITAInfo.PLUGIN_GUID, RITAInfo.PLUGIN_DISPLAY, RITAInfo.PLUGIN_VERSION)]
 
-        private void Awake()
-        {
-            Instance = this;
+	[BepInDependency(RITAInfo.BEPINEX_CONFIG_MANAGER, BepInDependency.DependencyFlags.SoftDependency)]
+	[BepInIncompatibility("com.nikkorap.WSOYappinator")]
 
-            Log = BepInEx.Logging.Logger.CreateLogSource(RITAInfo.PLUGIN_NAME);
+	public class RITA: BaseUnityPlugin
+	{
+		internal static RITA Instance { get; private set; } = null!;
+		internal static ManualLogSource Log = null!;
+		private Harmony _harmony = null!;
 
-            // Initialize Configuration Settings
-            Configuration.InitConfig(Config);
-            Configuration.RITAEnabled.SettingChanged += OnRITAToggle;
-            Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value); // Set initial state based on the value RITAEnabled on game launch
-            if (!BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(RITAInfo.BEPINEX_CONFIG_MANAGER)) 
-                Log.LogInfo("BepInEx Configuration Manager not installed. Recommend install to access RITA settings in-game.");
+		private void Awake()
+		{
+			Instance = this;
 
-            // Load Asset Bundle
-            BundleLoader.LoadBundle();
+			Log = BepInEx.Logging.Logger.CreateLogSource(RITAInfo.PLUGIN_NAME);
 
-            // Apply all Harmony patches
-            _harmony = new Harmony(RITAInfo.PLUGIN_GUID);
-            _harmony.PatchAll();
-            //Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
+			// Initialize Configuration Settings
+			Configuration.InitConfig(Config);
+			Configuration.RITAEnabled.SettingChanged += OnRITAToggle;
+			Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value); // Set initial state based on the value RITAEnabled on game launch
+			if (!BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(RITAInfo.BEPINEX_CONFIG_MANAGER))
+				Log.LogInfo("BepInEx Configuration Manager not installed. Recommend install to access RITA settings in-game.");
 
-            Log.LogInfo("[Awake] RITA Initialized");
-        }
+			// Load Asset Bundle
+			BundleLoader.LoadBundle();
 
-        private void OnDestroy()
-        {
-            try
-            {
-                StopAllCoroutines();
-                _harmony.UnpatchSelf();
-                //Log.LogDebug("[OnDestroy] Harmony patches unapplied");
-            }
-            catch (Exception ex)
-            {
-                Log.LogError(ex);
-            }
-        }
+			// Apply all Harmony patches
+			_harmony = new Harmony(RITAInfo.PLUGIN_GUID);
+			_harmony.PatchAll();
+			//Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
 
-        private void OnRITAToggle(object sender, EventArgs e)
-        {
-            Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value);
-            //Log.LogDebug($"[OnRITAToggle] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
-        }
+			Log.LogInfo("[Awake] RITA Initialized");
+		}
 
-        internal static bool CheckFaction()
-        {
-            //Log.LogDebug("[CheckFaction] Triggered");
+		private void OnDestroy()
+		{
+			try
+			{
+				StopAllCoroutines();
+				_harmony.UnpatchSelf();
+				//Log.LogDebug("[OnDestroy] Harmony patches unapplied");
+			}
+			catch (Exception ex)
+			{
+				Log.LogError(ex);
+			}
+		}
 
-            string? currentFaction = AircraftPatch.currentFaction;
-            //Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
+		private void OnRITAToggle(object sender, EventArgs e)
+		{
+			Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value);
+			//Log.LogDebug($"[OnRITAToggle] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
+		}
 
-            if (currentFaction == null) return false;
+		internal static bool CheckFaction()
+		{
+			//Log.LogDebug("[CheckFaction] Triggered");
 
-            // Check for official factions
-            if (Configuration.OfficialFactions.TryGetValue(currentFaction, out ConfigEntry<bool> factionEntry))
-            {
-                //Log.LogDebug($"[CheckFaction] Official faction matched: {currentFaction}, Enabled: {factionEntry.Value}");
-                return factionEntry.Value;
-            }
+			string? currentFaction = AircraftPatch.currentFaction;
+			//Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
 
-            // Check for custom factions
-            if (Configuration.RITAFactionCustom.Value)
-            {
-                //Log.LogDebug($"[CheckFaction] Custom faction matched: {currentFaction}");
-                return true;
-            }
+			if (currentFaction == null) return false;
 
-            //Log.LogDebug($"[CheckFaction] No faction matched: {currentFaction}");
-            return false;
-        }
+			// Check for official factions
+			if (Configuration.OfficialFactions.TryGetValue(currentFaction, out ConfigEntry<bool> factionEntry))
+			{
+				//Log.LogDebug($"[CheckFaction] Official faction matched: {currentFaction}, Enabled: {factionEntry.Value}");
+				return factionEntry.Value;
+			}
 
-        internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip original, AudioClip replacement)
-        {
-            //Log.LogDebug($"[RestoreClipAfterPlay] Waiting {replacement.length}s before restoring {original.name}, Loop: {source.loop}");
+			// Check for custom factions
+			if (Configuration.RITAFactionCustom.Value)
+			{
+				//Log.LogDebug($"[CheckFaction] Custom faction matched: {currentFaction}");
+				return true;
+			}
 
-            // Wait until the clip has finished playing before restoring
-            yield return new WaitForSeconds(replacement.length);
+			//Log.LogDebug($"[CheckFaction] No faction matched: {currentFaction}");
+			return false;
+		}
 
-            if (source == null || !source.gameObject.activeInHierarchy)
-            {
-                //Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {original.name}");
-                yield break;
-            }
+		// Restore the original AudioClip on an AudioSource after the replacement clip finishes playing.
+		internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip noClip, AudioClip ritaClip)
+		{
+			//Log.LogDebug($"[RestoreClipAfterPlay] Waiting {replacement.length}s before restoring {noClip.name}, Loop: {source.loop}");
 
-            bool wasLooping = source.loop;
+			// Wait until the clip has finished playing before restoring
+			yield return new WaitForSeconds(ritaClip.length);
 
-            source.Stop();
-            source.loop = wasLooping; // Preserve original loop setting
-            source.clip = original;
+			if (source == null || !source.gameObject.activeInHierarchy)
+			{
+				//Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {noClip.name}");
+				yield break;
+			}
 
-            if (wasLooping)
-            {
-                source.Play(); // Resume looping with original clip
-                //Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {original.name}");
-            }
-            //else Log.LogDebug($"[RestoreClipAfterPlay] Restored: {original.name}");
-        }
+			bool wasLooping = source.loop;
 
-        internal static void LogClips()
-        {
-            AudioClip[] clips = Resources.FindObjectsOfTypeAll<AudioClip>();
-            foreach (var clip in clips)
-            {
-                Log.LogDebug($"[LogClips] Found AudioClip in Resources: {clip.name}");
-            }
-        }
-    }
+			source.Stop();
+			source.loop = wasLooping; // Preserve original loop setting
+			source.clip = noClip;
+
+			// Resume looping with original clip
+			if (wasLooping)
+			{
+				source.Play();
+				//Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {noClip.name}");
+			}
+			//else Log.LogDebug($"[RestoreClipAfterPlay] Restored: {noClip.name}");
+		}
+
+		internal static void LogClips()
+		{
+			AudioClip[] clips = Resources.FindObjectsOfTypeAll<AudioClip>();
+			foreach (var clip in clips)
+			{
+				Log.LogDebug($"[LogClips] Found AudioClip in Resources: {clip.name}");
+			}
+		}
+	}
 }
