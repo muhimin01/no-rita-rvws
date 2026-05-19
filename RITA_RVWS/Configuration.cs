@@ -9,44 +9,64 @@ namespace RITA_RVWS
         internal static ConfigEntry<bool> RITAEnabled = null!;
         internal static ConfigEntry<bool> RITAFactionBDF = null!;
         internal static ConfigEntry<bool> RITAFactionPALA = null!;
+        internal static ConfigEntry<bool> RITAFactionCustom = null!;
 
-        private static ConfigurationManagerAttributes _factions = new ConfigurationManagerAttributes { Browsable = true, ReadOnly = false };
+        private static ConfigurationManagerAttributes _factionBDFAttributes = new ConfigurationManagerAttributes { Browsable = true, ReadOnly = false, Order = 3 };
+        private static ConfigurationManagerAttributes _factionPALAAttributes = new ConfigurationManagerAttributes { Browsable = true, ReadOnly = false, Order = 2 };
+        private static ConfigurationManagerAttributes _factionCustomAttributes = new ConfigurationManagerAttributes { Browsable = true, ReadOnly = false, Order = 1 };
+
+        // Add new official factions here alongside their ConfigEntry
+        internal static Dictionary<string, ConfigEntry<bool>> OfficialFactions = null!;
 
         internal static void InitConfig(ConfigFile config)
         {
             RITAEnabled = config.Bind("Settings", "RITA", true, "Enable RITA");
-            
+
             RITAFactionBDF = config.Bind(
-                "Factions", 
-                "BDF", 
-                true, 
-                new ConfigDescription("Enable RITA for BDF", null, _factions)
+                "Factions",
+                "BDF",
+                true,
+                new ConfigDescription("Enable RITA for BDF", null, _factionBDFAttributes)
             );
-            
+
             RITAFactionPALA = config.Bind(
-                "Factions", 
-                "PALA", 
-                true, 
-                new ConfigDescription("Enable RITA for PALA", null, _factions)
+                "Factions",
+                "PALA",
+                true,
+                new ConfigDescription("Enable RITA for PALA", null, _factionPALAAttributes)
             );
+
+            RITAFactionCustom = config.Bind(
+                "Factions",
+                "Custom Factions",
+                true,
+                new ConfigDescription("Enable RITA for custom factions", null, _factionCustomAttributes)
+            );
+
+            // Built once after all entries are bound
+            OfficialFactions = new Dictionary<string, ConfigEntry<bool>>
+            {
+                { "BoscaliHQ",  RITAFactionBDF  },
+                { "PrimevaHQ",  RITAFactionPALA },
+            };
         }
 
         internal static void SetFactionSettingsState(bool enabled)
         {
             RITA.Log.LogDebug("[SetFactionSettingsState] Triggered");
 
-            _factions.ReadOnly = !enabled;
-            //_factions.Browsable = enabled;
+            _factionBDFAttributes.ReadOnly = !enabled;
+            _factionPALAAttributes.ReadOnly = !enabled;
+            _factionCustomAttributes.ReadOnly = !enabled;
+
+            _factionBDFAttributes.Browsable = enabled;
+            _factionPALAAttributes.Browsable = enabled;
+            _factionCustomAttributes.Browsable = enabled;
 
             RITA.Log.LogDebug("[SetFactionSettingsState] Faction settings set to read-only");
-
-            //RITAFactionBDF.Value = RITAFactionBDF.Value;
-            //RITAFactionPALA.Value = RITAFactionPALA.Value;
-
         }
     }
 
-#pragma warning disable 0169, 0414, 0649
     internal sealed class ConfigurationManagerAttributes
     {
         public string? DispName;

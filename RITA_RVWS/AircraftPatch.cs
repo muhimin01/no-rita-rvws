@@ -35,7 +35,7 @@ namespace RITA_RVWS.Patches
             private static void Postfix(Player __instance)
             {
                 RITA.Log.LogDebug("[PatchRemoveAircraft] Triggered");
-                
+
                 currentFaction = null;
 
                 if (!GameManager.IsLocalPlayer(__instance)) return;

@@ -1,16 +1,17 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using NuclearOption.Networking;
-using RITA_RVWS.Patches;
 using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 
+using RITA_RVWS.Patches;
+
 namespace RITA_RVWS
 {
-    [BepInPlugin(RITAInfo.PLUGIN_GUID, RITAInfo.PLUGIN_NAME, RITAInfo.PLUGIN_VERSION)]
+    [BepInPlugin(RITAInfo.PLUGIN_GUID, "RITA: Russian Voice Warning System", RITAInfo.PLUGIN_VERSION)]
     public class RITA: BaseUnityPlugin
     {
         internal static RITA Instance { get; private set; }
@@ -25,7 +26,6 @@ namespace RITA_RVWS
 
             // Initialize Configuration Settings
             Configuration.InitConfig(Config);
-            Config.SettingChanged += OnSettingChanged;
             Configuration.RITAEnabled.SettingChanged += OnRITAToggle;
             Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value); // Set initial state based on the value RITAEnabled on game launch
 
@@ -37,7 +37,7 @@ namespace RITA_RVWS
             _harmony.PatchAll();
             Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
 
-            Log.LogInfo("[Awake] Initialized");
+            Log.LogInfo("[Awake] RITA Initialized");
         }
 
         private void OnDestroy()
@@ -54,15 +54,37 @@ namespace RITA_RVWS
             }
         }
 
-        private void OnSettingChanged(object sender, EventArgs e)
-        {
-            // TODO: Implement faction config setting
-        }
-
         private void OnRITAToggle(object sender, EventArgs e)
         {
             Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value);
             Log.LogDebug($"[OnRITAToggle] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
+        }
+
+        internal static bool CheckFaction()
+        {
+            Log.LogDebug("[CheckFaction] Triggered");
+
+            string? currentFaction = AircraftPatch.currentFaction;
+            Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
+
+            if (currentFaction == null) return false;
+
+            // Check for official factions
+            if (Configuration.OfficialFactions.TryGetValue(currentFaction, out ConfigEntry<bool> factionEntry))
+            {
+                Log.LogDebug($"[CheckFaction] Official faction matched: {currentFaction}, Enabled: {factionEntry.Value}");
+                return factionEntry.Value;
+            }
+
+            // Check for custom factions
+            if (Configuration.RITAFactionCustom.Value)
+            {
+                Log.LogDebug($"[CheckFaction] Custom faction matched: {currentFaction}");
+                return true;
+            }
+
+            Log.LogDebug($"[CheckFaction] No faction matched: {currentFaction}");
+            return false;
         }
 
         internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip original, AudioClip replacement)
@@ -77,7 +99,7 @@ namespace RITA_RVWS
                 Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {original.name}");
                 yield break;
             }
-            
+
             bool wasLooping = source.loop;
 
             source.Stop();
@@ -102,28 +124,6 @@ namespace RITA_RVWS
             {
                 Log.LogDebug($"[LogClips] Found AudioClip in Resources: {clip.name}");
             }
-        }
-
-        internal static bool CheckFaction()
-        {
-            Log.LogDebug("[CheckFaction] Triggered");
-
-            string? currentFaction = AircraftPatch.currentFaction;
-            const string BDF = "BoscaliHQ";
-            const string PALA = "PrimevaHQ";
-
-            Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
-
-            if (Configuration.RITAFactionBDF.Value &&  currentFaction == BDF)
-            {
-                return true;
-            }
-            else if (Configuration.RITAFactionPALA.Value && currentFaction == PALA)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }
