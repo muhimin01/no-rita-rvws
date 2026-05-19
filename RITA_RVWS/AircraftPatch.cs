@@ -1,4 +1,4 @@
-﻿// TODO: Faction config setting implementation
+﻿// Aircraft related Harmony patches, used to get the instance of the local player and current faction
 using HarmonyLib;
 using NuclearOption.Networking;
 using System;
@@ -14,12 +14,12 @@ namespace RITA_RVWS.Patches
         {
             private static void Postfix(Player __instance, Aircraft aircraft)
             {
-                RITA.Log.LogDebug("[PatchSetAircraft] Triggered");
+                //RITA.Log.LogDebug("[PatchSetAircraft] Triggered");
 
                 if (!Configuration.RITAEnabled.Value || !GameManager.IsLocalPlayer(__instance)) return;
                 try
                 {
-                    RITA.Log.LogDebug($"[PatchSetAircraft]: {__instance}, {__instance.HQ}, {aircraft}");
+                    //RITA.Log.LogDebug($"[PatchSetAircraft]: {__instance}, {__instance.HQ}, {aircraft}");
                     currentFaction = __instance.HQ.name;
                 }
                 catch (Exception ex)
@@ -34,11 +34,10 @@ namespace RITA_RVWS.Patches
         {
             private static void Postfix(Player __instance)
             {
-                RITA.Log.LogDebug("[PatchRemoveAircraft] Triggered");
-
-                currentFaction = null;
+                //RITA.Log.LogDebug("[PatchRemoveAircraft] Triggered");
 
                 if (!GameManager.IsLocalPlayer(__instance)) return;
+                currentFaction = null;
             }
         }
     }

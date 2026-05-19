@@ -8,9 +8,9 @@
 		<AssemblyTitle>RITA_RVWS</AssemblyTitle>
 		<AssemblyProduct>RITA_RVWS</AssemblyProduct>
 		<AssemblyDescription>Russian Voice Warning System for Nuclear Option</AssemblyDescription>
-		<AssemblyVersion>1.1.0</AssemblyVersion>
-		<AssemblyFileVersion>1.1.0.0</AssemblyFileVersion>
-		<InformationalVersion>1.1.0</InformationalVersion>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
+		<InformationalVersion>2.0.0</InformationalVersion>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
 	</PropertyGroup>

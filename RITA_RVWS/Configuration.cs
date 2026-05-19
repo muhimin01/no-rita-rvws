@@ -11,9 +11,9 @@ namespace RITA_RVWS
         internal static ConfigEntry<bool> RITAFactionPALA = null!;
         internal static ConfigEntry<bool> RITAFactionCustom = null!;
 
-        private static ConfigurationManagerAttributes _factionBDFAttributes = new ConfigurationManagerAttributes { Browsable = true, ReadOnly = false, Order = 3 };
-        private static ConfigurationManagerAttributes _factionPALAAttributes = new ConfigurationManagerAttributes { Browsable = true, ReadOnly = false, Order = 2 };
-        private static ConfigurationManagerAttributes _factionCustomAttributes = new ConfigurationManagerAttributes { Browsable = true, ReadOnly = false, Order = 1 };
+        private static ConfigurationManagerAttributes _factionBDFAttributes = new ConfigurationManagerAttributes { Order = 3 };
+        private static ConfigurationManagerAttributes _factionPALAAttributes = new ConfigurationManagerAttributes { Order = 2 };
+        private static ConfigurationManagerAttributes _factionCustomAttributes = new ConfigurationManagerAttributes { Order = 1 };
 
         // Add new official factions here alongside their ConfigEntry
         internal static Dictionary<string, ConfigEntry<bool>> OfficialFactions = null!;
@@ -53,7 +53,7 @@ namespace RITA_RVWS
 
         internal static void SetFactionSettingsState(bool enabled)
         {
-            RITA.Log.LogDebug("[SetFactionSettingsState] Triggered");
+            //RITA.Log.LogDebug("[SetFactionSettingsState] Triggered");
 
             _factionBDFAttributes.ReadOnly = !enabled;
             _factionPALAAttributes.ReadOnly = !enabled;
@@ -63,20 +63,14 @@ namespace RITA_RVWS
             _factionPALAAttributes.Browsable = enabled;
             _factionCustomAttributes.Browsable = enabled;
 
-            RITA.Log.LogDebug("[SetFactionSettingsState] Faction settings set to read-only");
+            //RITA.Log.LogDebug("[SetFactionSettingsState] Faction settings set to read-only");
         }
     }
 
     internal sealed class ConfigurationManagerAttributes
     {
-        public string? DispName;
-        public string? Category;
         public int? Order;
-        public bool? Browsable;
-        public bool? IsAdvanced;
-        public bool? ReadOnly;
-        public bool? ShowRangeAsPercent;
-        public bool? HideDefaultButton;
-        public object? DefaultValue;
+        public bool Browsable = true;
+        public bool ReadOnly = false;
     }
 }

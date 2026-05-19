@@ -27,7 +27,7 @@ namespace RITA_RVWS
                     RITA.Log.LogError($"[LoadBundle] Failed to load {assetBundle} from path: {bundlePath}");
                     return;
                 }
-                RITA.Log.LogDebug($"[LoadBundle] {assetBundle} loaded");
+                //RITA.Log.LogDebug($"[LoadBundle] {assetBundle} loaded");
                 LoadAssets(bundle);
             }
             catch (Exception ex)
@@ -39,7 +39,7 @@ namespace RITA_RVWS
 
         internal static void LoadAssets(AssetBundle bundle)
         {
-            RITA.Log.LogDebug("[LoadAssets] Loading assets...");
+            //RITA.Log.LogDebug("[LoadAssets] Loading assets...");
 
             // Load AudioClips from AssetBundle
             Dictionary<string, AudioClip> bundleClips = new Dictionary<string, AudioClip>();
@@ -48,7 +48,7 @@ namespace RITA_RVWS
                 if (clip.loadState != AudioDataLoadState.Loaded)
                 {
                     clip.LoadAudioData();
-                    RITA.Log.LogDebug($"[LoadAssets] Loading: {clip.name}, State: {clip.loadState}");
+                    //RITA.Log.LogDebug($"[LoadAssets] Loading: {clip.name}, State: {clip.loadState}");
                 }
 
                 bundleClips[clip.name] = clip;
@@ -63,7 +63,7 @@ namespace RITA_RVWS
                 if (bundleClips.TryGetValue(ritaClip, out AudioClip replacement))
                 {
                     AudioMap._ritaClips[noClip] = replacement;
-                    RITA.Log.LogDebug($"[LoadAssets] Mapped: {noClip} => {ritaClip}");
+                    //RITA.Log.LogDebug($"[LoadAssets] Mapped: {noClip} => {ritaClip}");
                 }
                 else
                 {
@@ -74,7 +74,7 @@ namespace RITA_RVWS
             // Unload AssetBundle from memory
             bundle.Unload(false);
 
-            RITA.Log.LogDebug($"[LoadAssets] Replacements count after load: {AudioMap._ritaClips.Count}");
+            //RITA.Log.LogDebug($"[LoadAssets] Replacements count after load: {AudioMap._ritaClips.Count}");
         }
     }
 }

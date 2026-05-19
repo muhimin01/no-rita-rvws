@@ -4,19 +4,18 @@ using BepInEx.Logging;
 using HarmonyLib;
 using System;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 using RITA_RVWS.Patches;
 
 namespace RITA_RVWS
 {
-    [BepInPlugin(RITAInfo.PLUGIN_GUID, "RITA: Russian Voice Warning System", RITAInfo.PLUGIN_VERSION)]
+    [BepInPlugin(RITAInfo.PLUGIN_GUID, RITAInfo.PLUGIN_DISPLAY, RITAInfo.PLUGIN_VERSION)]
     public class RITA: BaseUnityPlugin
     {
-        internal static RITA Instance { get; private set; }
-        internal static new ManualLogSource Log;
-        private Harmony _harmony;
+        internal static RITA Instance { get; private set; } = null!;
+        internal static ManualLogSource Log = null!;
+        private Harmony _harmony = null!;
 
         private void Awake()
         {
@@ -35,7 +34,7 @@ namespace RITA_RVWS
             // Apply all Harmony patches
             _harmony = new Harmony(RITAInfo.PLUGIN_GUID);
             _harmony.PatchAll();
-            Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
+            //Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
 
             Log.LogInfo("[Awake] RITA Initialized");
         }
@@ -46,7 +45,7 @@ namespace RITA_RVWS
             {
                 StopAllCoroutines();
                 _harmony.UnpatchSelf();
-                Log.LogDebug("[OnDestroy] Harmony patches unapplied");
+                //Log.LogDebug("[OnDestroy] Harmony patches unapplied");
             }
             catch (Exception ex)
             {
@@ -57,46 +56,46 @@ namespace RITA_RVWS
         private void OnRITAToggle(object sender, EventArgs e)
         {
             Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value);
-            Log.LogDebug($"[OnRITAToggle] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
+            //Log.LogDebug($"[OnRITAToggle] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
         }
 
         internal static bool CheckFaction()
         {
-            Log.LogDebug("[CheckFaction] Triggered");
+            //Log.LogDebug("[CheckFaction] Triggered");
 
             string? currentFaction = AircraftPatch.currentFaction;
-            Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
+            //Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
 
             if (currentFaction == null) return false;
 
             // Check for official factions
             if (Configuration.OfficialFactions.TryGetValue(currentFaction, out ConfigEntry<bool> factionEntry))
             {
-                Log.LogDebug($"[CheckFaction] Official faction matched: {currentFaction}, Enabled: {factionEntry.Value}");
+                //Log.LogDebug($"[CheckFaction] Official faction matched: {currentFaction}, Enabled: {factionEntry.Value}");
                 return factionEntry.Value;
             }
 
             // Check for custom factions
             if (Configuration.RITAFactionCustom.Value)
             {
-                Log.LogDebug($"[CheckFaction] Custom faction matched: {currentFaction}");
+                //Log.LogDebug($"[CheckFaction] Custom faction matched: {currentFaction}");
                 return true;
             }
 
-            Log.LogDebug($"[CheckFaction] No faction matched: {currentFaction}");
+            //Log.LogDebug($"[CheckFaction] No faction matched: {currentFaction}");
             return false;
         }
 
         internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip original, AudioClip replacement)
         {
-            Log.LogDebug($"[RestoreClipAfterPlay] Waiting {replacement.length}s before restoring {original.name}, Loop: {source.loop}");
+            //Log.LogDebug($"[RestoreClipAfterPlay] Waiting {replacement.length}s before restoring {original.name}, Loop: {source.loop}");
 
             // Wait until the clip has finished playing before restoring
             yield return new WaitForSeconds(replacement.length);
 
             if (source == null || !source.gameObject.activeInHierarchy)
             {
-                Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {original.name}");
+                //Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {original.name}");
                 yield break;
             }
 
@@ -109,11 +108,11 @@ namespace RITA_RVWS
             if (wasLooping)
             {
                 source.Play(); // Resume looping with original clip
-                Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {original.name}");
+                //Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {original.name}");
             }
             else
             {
-                Log.LogDebug($"[RestoreClipAfterPlay] Restored: {original.name}");
+                //Log.LogDebug($"[RestoreClipAfterPlay] Restored: {original.name}");
             }
         }
 
