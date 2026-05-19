@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace RITA_RVWS
 {
-    [BepInPlugin("com.betanonymous.rita_rvws", "RITA: Russian Voice Warning System", "1.1.0")]
+    [BepInPlugin(RITAInfo.PLUGIN_GUID, RITAInfo.PLUGIN_NAME, RITAInfo.PLUGIN_VERSION)]
     public class RITA: BaseUnityPlugin
     {
         internal static RITA Instance { get; private set; }
@@ -19,17 +19,19 @@ namespace RITA_RVWS
         {
             Instance = this;
 
-            Log = BepInEx.Logging.Logger.CreateLogSource("RITA_RVWS");
+            Log = BepInEx.Logging.Logger.CreateLogSource(RITAInfo.PLUGIN_NAME);
 
             // Initialize Configuration Settings
             Configuration.InitConfig(Config);
             Config.SettingChanged += OnSettingChanged;
+            Configuration.RITAEnabled.SettingChanged += OnRITAToggle;
+            Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value); // Set initial state based on the value RITAEnabled on game launch
 
             // Load Asset Bundle
             BundleLoader.LoadBundle();
 
             // Apply all Harmony patches
-            _harmony = new Harmony("com.betanonymous.rita_rvws");
+            _harmony = new Harmony(RITAInfo.PLUGIN_GUID);
             _harmony.PatchAll();
             Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
 
@@ -53,8 +55,12 @@ namespace RITA_RVWS
         private void OnSettingChanged(object sender, EventArgs e)
         {
             // TODO: Implement faction config setting
-            
-            Log.LogDebug($"[OnSettingChanged] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
+        }
+
+        private void OnRITAToggle(object sender, EventArgs e)
+        {
+            Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value);
+            Log.LogDebug($"[OnRITAToggle] RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
         }
 
         internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip original, AudioClip replacement)

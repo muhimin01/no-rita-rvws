@@ -11,9 +11,8 @@ namespace RITA_RVWS
     {
         internal static void LoadBundle()
         {
-            string pluginName = "RITA_RVWS";
             string assetBundle = "rita_rvws.assetbundle";
-            string bundlePath = Path.Combine(Paths.PluginPath, pluginName, assetBundle);
+            string bundlePath = Path.Combine(Paths.PluginPath, RITAInfo.PLUGIN_NAME, assetBundle);
 
             if (!File.Exists(bundlePath))
             {
