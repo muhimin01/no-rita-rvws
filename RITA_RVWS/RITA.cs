@@ -11,6 +11,10 @@ using RITA_RVWS.Patches;
 namespace RITA_RVWS
 {
     [BepInPlugin(RITAInfo.PLUGIN_GUID, RITAInfo.PLUGIN_DISPLAY, RITAInfo.PLUGIN_VERSION)]
+    
+    [BepInDependency(RITAInfo.BEPINEX_CONFIG_MANAGER, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInIncompatibility("com.nikkorap.WSOYappinator")]
+    
     public class RITA: BaseUnityPlugin
     {
         internal static RITA Instance { get; private set; } = null!;
@@ -27,6 +31,8 @@ namespace RITA_RVWS
             Configuration.InitConfig(Config);
             Configuration.RITAEnabled.SettingChanged += OnRITAToggle;
             Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value); // Set initial state based on the value RITAEnabled on game launch
+            if (!BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(RITAInfo.BEPINEX_CONFIG_MANAGER)) 
+                Log.LogInfo("BepInEx Configuration Manager not installed. Recommend install to access RITA settings in-game.");
 
             // Load Asset Bundle
             BundleLoader.LoadBundle();
@@ -110,10 +116,7 @@ namespace RITA_RVWS
                 source.Play(); // Resume looping with original clip
                 //Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {original.name}");
             }
-            else
-            {
-                //Log.LogDebug($"[RestoreClipAfterPlay] Restored: {original.name}");
-            }
+            //else Log.LogDebug($"[RestoreClipAfterPlay] Restored: {original.name}");
         }
 
         internal static void LogClips()
