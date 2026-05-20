@@ -61,7 +61,7 @@ namespace RITA_RVWS
 
 		private void OnSceneLoaded()
 		{
-			Log.LogDebug($"[OnSceneLoaded] Triggered");
+			//Log.LogDebug($"[OnSceneLoaded] Triggered");
 			AircraftPatch.currentFaction = null;
 		}
 
