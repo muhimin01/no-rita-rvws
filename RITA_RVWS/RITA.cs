@@ -17,16 +17,10 @@ namespace RITA_RVWS
 
 	public class RITA: BaseUnityPlugin
 	{
-<<<<<<< HEAD
 		internal static RITA Instance { get; private set; } = null!;
 		internal static ManualLogSource Log = null!;
 		private Harmony _harmony = null!;
 
-=======
-		internal static new ManualLogSource Log;
-		private Harmony _harmony;
-		
->>>>>>> main
 		private void Awake()
 		{
 			Instance = this;
@@ -67,7 +61,6 @@ namespace RITA_RVWS
 
 		private void OnSceneLoaded()
 		{
-<<<<<<< HEAD
 			//Log.LogDebug($"[OnSceneLoaded] Triggered");
 			AircraftPatch.currentFaction = null;
 		}
@@ -137,9 +130,6 @@ namespace RITA_RVWS
 				//Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {noClip.name}");
 			}
 			//else Log.LogDebug($"[RestoreClipAfterPlay] Restored: {noClip.name}");
-=======
-			Log.LogDebug($"RITA {(Configuration.RITAEnabled.Value ? "enabled" : "disabled")}");
->>>>>>> main
 		}
 
 		internal static void LogClips()
