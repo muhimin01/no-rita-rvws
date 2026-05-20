@@ -8,7 +8,8 @@ Updated for **Nuclear Option 0.33** | **[Download RITA RVWS here](https://github
 ## Installation
 
 #### Dependencies
-[BepInEx](https://github.com/BepInEx/BepInEx)   	
+- [BepInEx](https://github.com/BepInEx/BepInEx)
+- [BepInEx Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager) (Optional)
 
 #### Conflicts
 Any mods that replace any Voice Warning System lines.
