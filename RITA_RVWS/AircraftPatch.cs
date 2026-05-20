@@ -16,7 +16,8 @@ namespace RITA_RVWS.Patches
 			{
 				//RITA.Log.LogDebug("[PatchSetAircraft] Triggered");
 
-				if (!Configuration.RITAEnabled.Value || !GameManager.IsLocalPlayer(__instance)) return;
+				if (!GameManager.IsLocalPlayer(__instance)) return;
+
 				try
 				{
 					//RITA.Log.LogDebug($"[PatchSetAircraft]: {__instance}, {__instance.HQ}, {aircraft}");
