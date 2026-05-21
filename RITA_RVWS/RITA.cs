@@ -5,6 +5,7 @@ using HarmonyLib;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using RITA_RVWS.Patches;
 
@@ -14,6 +15,7 @@ namespace RITA_RVWS
 
 	[BepInDependency(RITAInfo.BEPINEX_CONFIG_MANAGER, BepInDependency.DependencyFlags.SoftDependency)]
 	[BepInIncompatibility("com.nikkorap.WSOYappinator")]
+	[BepInIncompatibility("com.JUSTJ7780.globalsoundreplacerno")]
 
 	public class RITA: BaseUnityPlugin
 	{
@@ -42,11 +44,16 @@ namespace RITA_RVWS
 			_harmony.PatchAll();
 			//Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
 
+			SceneManager.sceneLoaded += OnSceneLoaded;
+			SceneManager.sceneUnloaded += OnSceneUnloaded;
+
 			Log.LogInfo("[Awake] RITA Initialized");
 		}
 
 		private void OnDestroy()
 		{
+			//Log.LogDebug("[OnDestroy] Triggered");
+
 			try
 			{
 				StopAllCoroutines();
@@ -59,10 +66,17 @@ namespace RITA_RVWS
 			}
 		}
 
-		private void OnSceneLoaded()
+		private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 		{
 			//Log.LogDebug($"[OnSceneLoaded] Triggered");
-			AircraftPatch.currentFaction = null;
+			PlayerPatch.currentFaction = null;
+		}
+
+		private void OnSceneUnloaded(Scene scene)
+		{
+			//Log.LogDebug($"[OnSceneUnloaded] Triggered");
+			StopAllCoroutines();
+			PlayerPatch.currentFaction = null;
 		}
 
 		private void OnRITAToggle(object sender, EventArgs e)
@@ -75,10 +89,14 @@ namespace RITA_RVWS
 		{
 			//Log.LogDebug("[CheckFaction] Triggered");
 
-			string? currentFaction = AircraftPatch.currentFaction;
+			string? currentFaction = PlayerPatch.currentFaction;
 			//Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
 
-			if (currentFaction == null) return false;
+			if (currentFaction == null)
+			{
+				//Log.LogDebug("[CheckFaction] Skipped: currentFaction is null — aircraft not yet selected");
+				return false;
+			}
 
 			// Check for official factions
 			if (Configuration.OfficialFactions.TryGetValue(currentFaction, out ConfigEntry<bool> factionEntry))
@@ -101,35 +119,26 @@ namespace RITA_RVWS
 		// Restore the original AudioClip on an AudioSource after the replacement clip finishes playing.
 		internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip noClip, AudioClip ritaClip)
 		{
-			//Log.LogDebug($"[RestoreClipAfterPlay] Waiting {ritaClip.length}s before restoring {noClip.name}, Loop: {source.loop}");
+			AudioSource tempSource = source.gameObject.AddComponent<AudioSource>();
 
-			// Wait until the clip has finished playing before restoring
-			yield return new WaitForSeconds(ritaClip.length);
+			// Copy all settings from the original source
+			JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(source), tempSource);
 
-			if (source == null || !source.gameObject.activeInHierarchy)
-			{
-				//Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {noClip.name}");
-				yield break;
-			}
+			// Override exceptions
+			tempSource.loop = false;
+			tempSource.playOnAwake = false;
 
-			if (source.clip != ritaClip)
-			{
-				source.clip = noClip;
-				yield break;
-			}
-
-			bool wasLooping = source.loop;
-
-			source.loop = wasLooping; // Preserve original loop setting
+			// Restore the original clip immediately so subsequent Play() calls are unaffected
 			source.clip = noClip;
 
-			// Resume looping with original clip
-			if (wasLooping)
-			{
-				source.Play();
-				//Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {noClip.name}");
-			}
-			//else Log.LogDebug($"[RestoreClipAfterPlay] Restored: {noClip.name}");
+			// Play the replacement on the temporary source
+			tempSource.clip = ritaClip;
+			tempSource.Play();
+
+			yield return new WaitForSeconds(ritaClip.length);
+
+			if (tempSource != null)
+				Destroy(tempSource);
 		}
 
 		internal static void LogClips()

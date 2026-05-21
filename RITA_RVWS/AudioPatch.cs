@@ -67,7 +67,7 @@ namespace RITA_RVWS.Patches
 			{
 
 				//RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Triggered");
-				//RITA.Log.LogDebug($"[PlayOneShot] Incoming clip: {clip?.name ?? "null"}");
+				//RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Incoming clip: {clip?.name ?? "null"}");
 
 				if (!Configuration.RITAEnabled.Value)
 				{
@@ -81,7 +81,11 @@ namespace RITA_RVWS.Patches
 					return;
 				}
 
-				if (clip == null) return;
+				if (clip == null)
+				{
+					//RITA.Log.LogDebug($"[AudioSourcePlayOneShot] Skipped: clip is null");
+					return;
+				}
 
 				if (AudioMap._ritaClips.TryGetValue(clip.name, out AudioClip ritaClip))
 				{
