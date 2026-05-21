@@ -2,11 +2,12 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using RITA_RVWS.Patches;
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+using RITA_RVWS.Patches;
 
 namespace RITA_RVWS
 {
@@ -118,35 +119,26 @@ namespace RITA_RVWS
 		// Restore the original AudioClip on an AudioSource after the replacement clip finishes playing.
 		internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip noClip, AudioClip ritaClip)
 		{
-			//Log.LogDebug($"[RestoreClipAfterPlay] Waiting {ritaClip.length}s before restoring {noClip.name}, Loop: {source.loop}");
+			AudioSource tempSource = source.gameObject.AddComponent<AudioSource>();
 
-			// Wait until the clip has finished playing before restoring
-			yield return new WaitForSeconds(ritaClip.length);
+			// Copy all settings from the original source
+			JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(source), tempSource);
 
-			if (source == null || !source.gameObject.activeInHierarchy)
-			{
-				//Log.LogDebug($"[RestoreClipAfterPlay] Source destroyed, cannot restore {noClip.name}");
-				yield break;
-			}
+			// Override exceptions
+			tempSource.loop = false;
+			tempSource.playOnAwake = false;
 
-			if (source.clip != ritaClip)
-			{
-				source.clip = noClip;
-				yield break;
-			}
-
-			bool wasLooping = source.loop;
-
-			source.loop = wasLooping; // Preserve original loop setting
+			// Restore the original clip immediately so subsequent Play() calls are unaffected
 			source.clip = noClip;
 
-			// Resume looping with original clip
-			if (wasLooping)
-			{
-				source.Play();
-				//Log.LogDebug($"[RestoreClipAfterPlay] Restored and resumed loop: {noClip.name}");
-			}
-			//else Log.LogDebug($"[RestoreClipAfterPlay] Restored: {noClip.name}");
+			// Play the replacement on the temporary source
+			tempSource.clip = ritaClip;
+			tempSource.Play();
+
+			yield return new WaitForSeconds(ritaClip.length);
+
+			if (tempSource != null)
+				Destroy(tempSource);
 		}
 
 		internal static void LogClips()
