@@ -29,7 +29,7 @@ Delete the `RITA_RVWS` folder from your BepInEx `plugins` folder.
 ## Credits
 War Thunder - Original voice lines
 
-## Included voice lines | NO 0.33
+## Included voice lines | Nuclear Option 0.33
 | English | Русский |
 | ----------- | ----------- |
 | Eject | Катапультируйся |
