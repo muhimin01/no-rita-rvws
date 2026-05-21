@@ -2,11 +2,11 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using RITA_RVWS.Patches;
 using System;
 using System.Collections;
 using UnityEngine;
-
-using RITA_RVWS.Patches;
+using UnityEngine.SceneManagement;
 
 namespace RITA_RVWS
 {
@@ -14,6 +14,7 @@ namespace RITA_RVWS
 
 	[BepInDependency(RITAInfo.BEPINEX_CONFIG_MANAGER, BepInDependency.DependencyFlags.SoftDependency)]
 	[BepInIncompatibility("com.nikkorap.WSOYappinator")]
+	[BepInIncompatibility("com.JUSTJ7780.globalsoundreplacerno")]
 
 	public class RITA: BaseUnityPlugin
 	{
@@ -42,11 +43,16 @@ namespace RITA_RVWS
 			_harmony.PatchAll();
 			//Log.LogDebug($"[Awake] Harmony patches applied: {_harmony.GetPatchedMethods().Count()}");
 
+			SceneManager.sceneLoaded += OnSceneLoaded;
+			SceneManager.sceneUnloaded += OnSceneUnloaded;
+
 			Log.LogInfo("[Awake] RITA Initialized");
 		}
 
 		private void OnDestroy()
 		{
+			//Log.LogDebug("[OnDestroy] Triggered");
+
 			try
 			{
 				StopAllCoroutines();
@@ -59,10 +65,17 @@ namespace RITA_RVWS
 			}
 		}
 
-		private void OnSceneLoaded()
+		private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 		{
 			//Log.LogDebug($"[OnSceneLoaded] Triggered");
-			AircraftPatch.currentFaction = null;
+			PlayerPatch.currentFaction = null;
+		}
+
+		private void OnSceneUnloaded(Scene scene)
+		{
+			//Log.LogDebug($"[OnSceneUnloaded] Triggered");
+			StopAllCoroutines();
+			PlayerPatch.currentFaction = null;
 		}
 
 		private void OnRITAToggle(object sender, EventArgs e)
@@ -75,10 +88,14 @@ namespace RITA_RVWS
 		{
 			//Log.LogDebug("[CheckFaction] Triggered");
 
-			string? currentFaction = AircraftPatch.currentFaction;
+			string? currentFaction = PlayerPatch.currentFaction;
 			//Log.LogDebug($"[CheckFaction] Current faction: {currentFaction}");
 
-			if (currentFaction == null) return false;
+			if (currentFaction == null)
+			{
+				//Log.LogDebug("[CheckFaction] Skipped: currentFaction is null — aircraft not yet selected");
+				return false;
+			}
 
 			// Check for official factions
 			if (Configuration.OfficialFactions.TryGetValue(currentFaction, out ConfigEntry<bool> factionEntry))
