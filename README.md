@@ -1,7 +1,9 @@
 # RITA: Nuclear Option Russian Voice Warning System
 A Nuclear Option mod that replaces the English Voice Warning System with Russian equivalents. Voice lines sourced from War Thunder. **With BepInEx Configuration Manager, you can enable/disable RITA globally or per-faction.**
 
-Updated for **Nuclear Option 0.33** | **[Download RITA RVWS here](https://github.com/muhimin01/no-rita-rvws/releases/latest)**
+Updated for **Nuclear Option 0.33**
+
+[Download RITA RVWS Manually](https://github.com/muhimin01/no-rita-rvws/releases/latest) | Download RITA RVWS through the [Nuclear Option Mod Manager (NOMM)](https://github.com/Combat787/NOMM)
 
 [![Video Demonstration](https://markdown-videos-api.jorgenkh.no/youtube/6ttqqmxeVXk)](https://www.youtube.com/watch?v=6ttqqmxeVXk)
 
@@ -12,7 +14,7 @@ Updated for **Nuclear Option 0.33** | **[Download RITA RVWS here](https://github
 ## Conflicts
 Any mods that replace any Voice Warning System lines.
 
-## Installation
+## Manual Installation
 1. Install [BepInEx](https://github.com/BepInEx/BepInEx) if you haven't already.
 2. Place the `RITA_RVWS` folder from the mod into your BepInEx `plugins` folder.
 
