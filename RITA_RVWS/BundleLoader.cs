@@ -11,8 +11,11 @@ namespace RITA_RVWS
 	{
 		internal static void LoadBundle()
 		{
-			string assetBundle = "rita_rvws.assetbundle";
-			string bundlePath = Path.Combine(Paths.PluginPath, RITAInfo.PLUGIN_NAME, assetBundle);
+			const string assetBundle = "rita_rvws.assetbundle";
+			string ritaPath = Path.Combine(Paths.PluginPath, RITAInfo.PLUGIN_NAME);
+			string bundlePath = Directory.GetFiles(ritaPath, assetBundle, SearchOption.AllDirectories)[0];
+
+			//RITA.Log.LogDebug($"bundlePath: {bundlePath}");
 
 			if (!File.Exists(bundlePath))
 			{

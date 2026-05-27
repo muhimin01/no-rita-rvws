@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -33,7 +34,7 @@ namespace RITA_RVWS
 			Configuration.InitConfig(Config);
 			Configuration.RITAEnabled.SettingChanged += OnRITAToggle;
 			Configuration.SetFactionSettingsState(Configuration.RITAEnabled.Value); // Set initial state based on the value RITAEnabled on game launch
-			if (!BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(RITAInfo.BEPINEX_CONFIG_MANAGER))
+			if (!Chainloader.PluginInfos.ContainsKey(RITAInfo.BEPINEX_CONFIG_MANAGER))
 				Log.LogInfo("BepInEx Configuration Manager not installed. Recommend install to access RITA settings in-game.");
 
 			// Load Asset Bundle
@@ -116,7 +117,7 @@ namespace RITA_RVWS
 			return false;
 		}
 
-		// Restore the original AudioClip on an AudioSource after the replacement clip finishes playing.
+		// Restore the original AudioClip on an AudioSource after the RITA clip finishes playing.
 		internal IEnumerator RestoreClipAfterPlay(AudioSource source, AudioClip noClip, AudioClip ritaClip)
 		{
 			AudioSource tempSource = source.gameObject.AddComponent<AudioSource>();

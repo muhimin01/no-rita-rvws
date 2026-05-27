@@ -4,12 +4,14 @@
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
 		<RootNamespace>RITA_RVWS</RootNamespace>
+		<AssemblyTitle>RITA_RVWS</AssemblyTitle>
 		<AssemblyName>RITA_RVWS</AssemblyName>
 		<Description>Russian Voice Warning System for Nuclear Option</Description>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<Version>2.0.1</Version>
-		<FileVersion>2.0.1.0</FileVersion>
-		<InformationalVersion>2.0.1</InformationalVersion>
+		<Authors>betanonymous,muhimin01</Authors>
+		<AssemblyVersion>2.0.2.0</AssemblyVersion>
+		<Version>2.0.2</Version>
+		<FileVersion>2.0.2.0</FileVersion>
+		<InformationalVersion>2.0.2</InformationalVersion>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
