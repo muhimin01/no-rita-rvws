@@ -12,7 +12,7 @@ Updated for **Nuclear Option 0.33**
 - [BepInEx Configuration Manager](https://github.com/BepInEx/BepInEx.ConfigurationManager) (Optional)
 
 ## Conflicts
-Any mods that replace any Voice Warning System lines.
+Any mods that replace or modify Nuclear Option's Voice Warning System audio.
 
 ## Manual Installation
 1. Install [BepInEx](https://github.com/BepInEx/BepInEx) if you haven't already.
