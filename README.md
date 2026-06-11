@@ -1,11 +1,13 @@
 # RITA: Nuclear Option Russian Voice Warning System
 A Nuclear Option mod that replaces the English Voice Warning System with Russian equivalents. Voice lines sourced from War Thunder. **With BepInEx Configuration Manager, you can enable/disable RITA globally or per-faction.**
 
-Updated for **Nuclear Option 0.33**
-
-[Download RITA RVWS Manually](https://github.com/muhimin01/no-rita-rvws/releases/latest) | Download RITA RVWS through the [Nuclear Option Mod Manager (NOMM)](https://github.com/Combat787/NOMM)
+## Updated for **Nuclear Option 0.33** | [List of included voicelines](/voicelines.csv)
 
 [![Video Demonstration](https://markdown-videos-api.jorgenkh.no/youtube/6ttqqmxeVXk)](https://www.youtube.com/watch?v=6ttqqmxeVXk)
+
+## Download
+- [Download RITA RVWS Manually](https://github.com/muhimin01/no-rita-rvws/releases/latest)
+- Download RITA RVWS through the [Nuclear Option Mod Manager (NOMM)](https://github.com/Combat787/NOMM)
 
 ## Dependencies
 - [BepInEx](https://github.com/BepInEx/BepInEx)
@@ -30,32 +32,3 @@ Delete the `RITA_RVWS` folder from your BepInEx `plugins` folder.
 
 ## Credits
 War Thunder - Original voice lines
-
-## Included voice lines | Nuclear Option 0.33
-| English | Русский |
-| ----------- | ----------- |
-| Eject | Катапультируйся |
-| Engine Fire | Пожар двигателя |
-| Engine 1 Fire | Пожар первого двигателя
-| Engine 2 Fire | Пожар второго двигателя
-| Engine 3 Fire	| Пожар третьего двигателя
-| Engine 4 Fire	| Пожар четвёртого двигателя
-| Front Left Engine Failure | Отказ переднего левого двигателя |
-| Front Right Engine Failure | Отказ переднего правого двигателя |
-| Left Engine Failure | Отказ левого двигателя |
-| Left Engine Fire | Пожар левого двигателя |
-| Left Fan Failure | Отказ левого винта |
-| Left Prop Strike | Отказ левого винта |
-| Lower Gear | Выпусти шасси |
-| Main Rotor Damage | Отказ несущего винта |
-| Overspeed | Скорость предельная |
-| Raise Gear | Проверь шасси |
-| Rear Left Engine Failure | Отказ заднего левого двигателя |
-| Rear Right Engine Failure | Отказ заднего правого двигателя |
-| Right Engine Failure | Отказ правого двигателя |
-| Right Engine Fire | Пожар правого двигателя |
-| Right Fan Failure | Отказ правого винта |
-| Right Prop Strike | Отказ правого винта |
-| Stall | Предельный угол атаки |
-| Tail Rotor Failure | Отказ хвостового винта |
-| VRS | СВК |
