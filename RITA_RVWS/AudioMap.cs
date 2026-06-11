@@ -6,7 +6,6 @@ namespace RITA_RVWS
 {
 	internal static class AudioMap
 	{
-		//internal static Dictionary<AudioSource, AudioClip> _noClips = new Dictionary<AudioSource, AudioClip>();
 		internal static Dictionary<string, AudioClip> _ritaClips = new Dictionary<string, AudioClip>();
 
 		internal static readonly Dictionary<string, string> ClipMap = new Dictionary<string, string>
