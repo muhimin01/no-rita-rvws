@@ -142,6 +142,7 @@ namespace RITA_RVWS
 				Destroy(tempSource);
 		}
 
+		// Log AudioClips for debugging
 		internal static void LogClips()
 		{
 			AudioClip[] clips = Resources.FindObjectsOfTypeAll<AudioClip>();
