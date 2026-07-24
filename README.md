@@ -26,7 +26,7 @@ Delete the `RITA_RVWS` folder from your BepInEx `plugins` folder.
 > *Asset Replacement has been discontinued due to continuous incompatibilities with Nuclear Option updates.
 > If you still have this mod's `resource.assets`, delete it and `RITA_RVWS.resource` from the `NuclearOption_Data` folder in your Nuclear Option game directory.*
 
-## DISCLAIMERS
+## DISCLOSURE
 - Some voice lines were generated using AI to accommodate for Nuclear Option specific warnings.
 - I am not a native Russian speaker. My Russian proficiency is currently very limited. For any Russian speakers or those who are much more familiar with Russian aircraft Voice Warning Systems, you are welcome to provide any corrections or suggestions.
 
