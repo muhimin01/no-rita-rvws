@@ -23,6 +23,7 @@ Any mods that replace or modify Nuclear Option's Voice Warning System audio.
 ## Uninstallation
 Delete the `RITA_RVWS` folder from your BepInEx `plugins` folder.
 
+> [!IMPORTANT]
 > *Asset Replacement has been discontinued due to continuous incompatibilities with Nuclear Option updates.
 > If you still have this mod's `resource.assets`, delete it and `RITA_RVWS.resource` from the `NuclearOption_Data` folder in your Nuclear Option game directory.*
 
